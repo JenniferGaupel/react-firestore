@@ -1,4 +1,4 @@
-import { onSnapshot, collection } from "firebase/firestore";
+import { onSnapshot, collection, setDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import db from "./firebase";
 
@@ -20,14 +20,22 @@ function App() {
   useEffect(
     () =>
       onSnapshot(collection(db, "colors"), (snapshot) => {
-        setColors(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})));
+        setColors(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       }),
     []
   );
 
+  const handleNew = async () => {
+    const docRef = doc(db, "colors", "color001");
+    const payload = {name:"Black", value:"#000"}
+    await setDoc(docRef, payload);
+  };
+
   return (
     <div className="root">
-      <button className="button">New</button>
+      <button className="button" onClick={handleNew}>
+        New
+      </button>
       <ul>
         {colors.map((color) => (
           <li key={color.id}>
